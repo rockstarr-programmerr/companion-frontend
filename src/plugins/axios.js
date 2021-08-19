@@ -9,9 +9,13 @@ import axios from 'axios'
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 const config = {
-  // baseURL: process.env.baseURL || process.env.apiUrl || ""
-  // timeout: 60 * 1000, // Timeout
-  // withCredentials: true, // Check cross-site Access-Control
+  baseURL: process.env.VUE_APP_API_ROOT,
+  timeout: 60 * 1000, // Timeout
+  headers: {
+    common: {
+      'Content-Type': 'application/json'
+    }
+  }
 }
 
 const _axios = axios.create(config)
@@ -19,6 +23,7 @@ const _axios = axios.create(config)
 _axios.interceptors.request.use(
   function (config) {
     // Do something before request is sent
+    config.headers.common.Authorization = ''
     return config
   },
   function (error) {
@@ -39,6 +44,7 @@ _axios.interceptors.response.use(
   }
 )
 
+// eslint-disable-next-line
 Plugin.install = function (Vue, options) {
   Vue.axios = _axios
   window.axios = _axios

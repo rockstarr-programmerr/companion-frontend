@@ -13,13 +13,9 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn
-        icon
-      >
-        <v-icon>
-          mdi-account-outline
-        </v-icon>
-      </v-btn>
+      <div v-if="isLoggedIn">
+        {{ user.name }}
+      </div>
     </v-app-bar>
 
     <v-main>
@@ -30,8 +26,16 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
+import { mapGetters } from 'vuex'
 
-@Component
+@Component({
+  computed: {
+    ...mapGetters({
+      user: 'users/loggedInUser',
+      isLoggedIn: 'users/isLoggedIn'
+    })
+  }
+})
 export default class LayoutDefault extends Vue {
 
 }

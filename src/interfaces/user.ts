@@ -1,4 +1,4 @@
 export declare interface User {
-  id: number;
+  pk: number;
   name: string;
 }
