@@ -1,4 +1,4 @@
 export declare interface User {
-  pk: number;
-  name: string;
+  username: string;
+  email: string;
 }

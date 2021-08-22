@@ -5,7 +5,7 @@
     </v-card-title>
 
     <v-card-subtitle>
-      Login
+      Register
     </v-card-subtitle>
 
     <v-card-text>
@@ -23,20 +23,13 @@
         ></v-text-field>
       </v-form>
 
-      <div
-        v-if="errorMsg !== ''"
-        class="error--text mb-3"
-      >
-        {{ errorMsg }}
-      </div>
-
       <div>
-        <span>No account?</span>
+        <span>Already have account?</span>
         <a
           href="#"
           @click="changePage"
         >
-          Register
+          Login
         </a>
       </div>
     </v-card-text>
@@ -44,12 +37,12 @@
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn
-        @click="login"
+        @click="register"
         color="primary"
         depressed
         :loading="loading"
       >
-        Login
+        Register
       </v-btn>
     </v-card-actions>
   </v-card>
@@ -57,42 +50,16 @@
 
 <script lang="ts">
 import { Vue, Component, Emit } from 'vue-property-decorator'
-import { LoginReq } from '@/interfaces/api/user'
-import { unhandledExc } from '@/utils'
-import { status } from '@/api/status-codes'
 
 @Component
-export default class Login extends Vue {
+export default class Register extends Vue {
   name = ''
   password = ''
   showPassword = false
   loading = false
-  errorMsg = ''
 
-  login (): void {
-    this.errorMsg = ''
-    if (this.loading) return
-    this.loading = true
-
-    const payload: LoginReq = {
-      username: this.name,
-      password: this.password
-    }
-
-    this.$store.dispatch('users/login', payload)
-      .then(() => {
-        this.$router.push({ name: 'GroupList' })
-      })
-      .catch(error => {
-        if (error.response.status === status.HTTP_401_UNAUTHORIZED) {
-          this.errorMsg = error.response.data.detail
-        } else {
-          unhandledExc(error)
-        }
-      })
-      .finally(() => {
-        this.loading = false
-      })
+  register (): void {
+    console.log('register')
   }
 
   @Emit('change-page')

@@ -4,7 +4,7 @@ import VueRouter, { RouteConfig } from 'vue-router'
 import LayoutNoAppbar from '../layouts/LayoutNoAppbar.vue'
 
 import Home from '../views/Home.vue'
-import Login from '../views/auth/Login.vue'
+import Auth from '../views/auth/Auth.vue'
 import GroupList from '../views/group/GroupList.vue'
 
 Vue.use(VueRouter)
@@ -16,9 +16,9 @@ const routes: Array<RouteConfig> = [
     component: Home
   },
   {
-    path: '/login',
-    name: 'Login',
-    component: Login,
+    path: '/auth',
+    name: 'Auth',
+    component: Auth,
     meta: {
       layout: LayoutNoAppbar
     }
