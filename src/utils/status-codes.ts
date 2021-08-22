@@ -1,3 +1,5 @@
+import { AxiosError } from "axios"
+
 export const isInformational = (status: number): boolean => { return status >= 100 && status <= 199 }
 
 export const isSuccess = (status: number): boolean => { return status >= 200 && status <= 299 }
@@ -7,6 +9,13 @@ export const isRedirect = (status: number): boolean => { return status >= 300 &&
 export const isClientError = (status: number): boolean => { return status >= 400 && status <= 499 }
 
 export const isServerError = (status: number): boolean => { return status >= 500 && status <= 599 }
+
+export const assertErrCode = (error: AxiosError, expectedCode: number): boolean => {
+  return (
+    error.response !== undefined &&
+    error.response.status === expectedCode
+  )
+}
 
 export const status = {
   HTTP_100_CONTINUE: 100,

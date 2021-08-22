@@ -11,7 +11,7 @@
     <v-card-text>
       <v-form>
         <v-text-field
-          v-model="name"
+          v-model="username"
           label="Your name"
         ></v-text-field>
         <v-text-field
@@ -58,12 +58,12 @@
 <script lang="ts">
 import { Vue, Component, Emit } from 'vue-property-decorator'
 import { LoginReq } from '@/interfaces/api/user'
-import { unhandledExc } from '@/utils'
-import { status } from '@/api/status-codes'
+import { unexpectedExc } from '@/utils'
+import { assertErrCode, status } from '@/utils/status-codes'
 
 @Component
 export default class Login extends Vue {
-  name = ''
+  username = ''
   password = ''
   showPassword = false
   loading = false
@@ -75,19 +75,20 @@ export default class Login extends Vue {
     this.loading = true
 
     const payload: LoginReq = {
-      username: this.name,
+      username: this.username,
       password: this.password
     }
 
     this.$store.dispatch('users/login', payload)
       .then(() => {
+        // TODO: implement ?next
         this.$router.push({ name: 'GroupList' })
       })
       .catch(error => {
-        if (error.response.status === status.HTTP_401_UNAUTHORIZED) {
+        if (assertErrCode(error, status.HTTP_401_UNAUTHORIZED)) {
           this.errorMsg = error.response.data.detail
         } else {
-          unhandledExc(error)
+          unexpectedExc(error)
         }
       })
       .finally(() => {

@@ -32,7 +32,7 @@
 
 <script lang="ts">
 import { User } from '@/interfaces/user'
-import { unhandledExc } from '@/utils'
+import { unexpectedExc } from '@/utils'
 import { Vue, Component } from 'vue-property-decorator'
 import { mapGetters } from 'vuex'
 
@@ -57,7 +57,7 @@ export default class LayoutDefault extends Vue {
     if (!this.hasUserInfo) {
       this.loading = true
       this.$store.dispatch('users/getInfo')
-        .catch(unhandledExc)
+        .catch(unexpectedExc)
         .finally(() => {
           this.loading = false
         })

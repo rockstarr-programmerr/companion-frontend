@@ -5,7 +5,7 @@ import axios from 'axios'
 import Store from '@/store'
 import router from '@/router'
 import { getAuthorizationHeaderValue } from '@/utils/auth'
-import { status } from '@/api/status-codes'
+import { status, assertErrCode } from '@/utils/status-codes'
 
 // Full config:  https://github.com/axios/axios#request-config
 // axios.defaults.baseURL = process.env.baseURL || process.env.apiUrl || '';
@@ -45,7 +45,7 @@ _axios.interceptors.response.use(
   handleResponseError
 )
 
-// eslint-disable-next-line
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 Plugin.install = function (Vue, options) {
   Vue.axios = _axios
   window.axios = _axios
@@ -69,24 +69,38 @@ export default Plugin
 
 function setAuthenticationHeader (headers) {
   const accessToken = Store.getters['users/accessToken']
-  headers.Authorization = getAuthorizationHeaderValue(accessToken)
+  if (accessToken !== '') {
+    headers.Authorization = getAuthorizationHeaderValue(accessToken)
+  } else {
+    delete headers.Authorization
+  }
 }
 
-async function handleResponseError (error) {
+function handleResponseError (error) {
   if (error.response === undefined) {
     return Promise.reject(error)
   }
 
   if (isUnauthorized(error)) {
     /* eslint-disable brace-style */
-    if (
-      refreshTokenNotValid(error) ||
-      userInactiveOrNotFound(error)
-    ) {
-      await Store.dispatch('users/logout')
-      directToLogin()
-      // eslint-disable-next-line prefer-promise-reject-errors
-      return Promise.reject()
+
+    if (refreshTokenNotValid(error)) {
+      Store.dispatch('users/logout')
+      goToLogin()
+      const isExpectedError = assertErrCode(error, status.HTTP_401_UNAUTHORIZED)
+      if (isExpectedError) {
+        // eslint-disable-next-line prefer-promise-reject-errors
+        return Promise.reject() // Will not display unexpected error message to user
+      }
+      else {
+        return Promise.reject(error) // Will display unexpected error message to user
+      }
+    }
+
+    else if (userInactiveOrNotFound(error)) {
+      Store.dispatch('users/logout')
+      goToLogin()
+      return Promise.reject(error)
     }
 
     else if (isLoginRoute()) {
@@ -94,12 +108,7 @@ async function handleResponseError (error) {
     }
 
     else {
-      const response = await Store.dispatch('users/refreshToken')
-        .then(async () => {
-          setAuthenticationHeader(error.config.headers)
-          const response = await _axios.request(error.config)
-          return response
-        })
+      const response = tryAgainAfterRefreshingToken(error)
       return Promise.resolve(response)
     }
   }
@@ -118,7 +127,7 @@ function isLoginRoute () {
   return false
 }
 
-function directToLogin () {
+function goToLogin () {
   // If user is already at signin page, no need to redirect
   if (isLoginRoute()) {
     return
@@ -135,7 +144,7 @@ function directToLogin () {
 }
 
 function isUnauthorized (error) {
-  return error.response.status === status.HTTP_401_UNAUTHORIZED
+  return assertErrCode(error, status.HTTP_401_UNAUTHORIZED)
 }
 
 function refreshTokenNotValid (error) {
@@ -150,4 +159,11 @@ function userInactiveOrNotFound (error) {
     error.response.data.code === 'user_inactive' ||
     error.response.data.code === 'user_not_found'
   )
+}
+
+async function tryAgainAfterRefreshingToken (error) {
+  await Store.dispatch('users/refreshToken')
+  setAuthenticationHeader(error.config.headers)
+  const response = await _axios.request(error.config)
+  return response
 }

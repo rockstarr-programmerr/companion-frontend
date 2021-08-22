@@ -1,5 +1,5 @@
 import { Api } from '@/api'
-import { LoginReq } from '@/interfaces/api/user'
+import { LoginReq, RegisterReq } from '@/interfaces/api/user'
 import { User } from '@/interfaces/user'
 import { loadAccessToken, loadRefreshToken, setAccessToken, setRefreshToken } from '@/utils/auth'
 import { Module } from 'vuex'
@@ -44,6 +44,11 @@ export const users: Module<UsersState, RootState> = {
   },
 
   actions: {
+    async register ({ commit }, payload: RegisterReq): Promise<void> {
+      const data = await Api.register(payload)
+      commit('SET_LOGGED_IN_USER', data)
+    },
+
     async login ({ commit }, payload: LoginReq): Promise<void> {
       const data = await Api.login(payload)
       commit('SET_ACCESS_TOKEN', data.access)

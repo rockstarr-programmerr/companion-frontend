@@ -1,7 +1,7 @@
 export const endpoints = {
   users: {
-    login: '/users/login/',
     register: '/users/register/',
+    login: '/users/login/',
     tokenRefresh: '/users/token-refresh/',
     getInfo: '/users/get-my-info/'
   }
