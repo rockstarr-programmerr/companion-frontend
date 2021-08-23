@@ -3,7 +3,7 @@ import VueRouter, { RouteConfig } from 'vue-router'
 
 import LayoutNoAppbar from '../layouts/LayoutNoAppbar.vue'
 
-import Home from '../views/Home.vue'
+// import Home from '../views/Home.vue'
 import Auth from '../views/auth/Auth.vue'
 import GroupList from '../views/group/GroupList.vue'
 
@@ -13,7 +13,9 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    redirect: {
+      name: 'GroupList'
+    }
   },
   {
     path: '/auth',

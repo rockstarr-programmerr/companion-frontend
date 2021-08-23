@@ -76,7 +76,7 @@ export default class Register extends Vue {
   register (): void {
     if (this.loading) return
     this.loading = true
-    this.resetForm()
+    this.resetValidation()
 
     const payload = {
       username: this.username,
@@ -106,7 +106,7 @@ export default class Register extends Vue {
       })
   }
 
-  resetForm (): void {
+  resetValidation (): void {
     this.usernameErrs = []
     this.passwordErrs = []
   }

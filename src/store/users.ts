@@ -45,12 +45,12 @@ export const users: Module<UsersState, RootState> = {
 
   actions: {
     async register ({ commit }, payload: RegisterReq): Promise<void> {
-      const data = await Api.register(payload)
+      const data = await Api.users.register(payload)
       commit('SET_LOGGED_IN_USER', data)
     },
 
     async login ({ commit }, payload: LoginReq): Promise<void> {
-      const data = await Api.login(payload)
+      const data = await Api.users.login(payload)
       commit('SET_ACCESS_TOKEN', data.access)
       commit('SET_REFRESH_TOKEN', data.refresh)
     },
@@ -65,13 +65,13 @@ export const users: Module<UsersState, RootState> = {
       const payload = {
         refresh: loadRefreshToken()
       }
-      const data = await Api.tokenRefresh(payload)
+      const data = await Api.users.tokenRefresh(payload)
       commit('SET_ACCESS_TOKEN', data.access)
       commit('SET_REFRESH_TOKEN', data.refresh)
     },
 
     async getInfo ({ commit }): Promise<void> {
-      const data = await Api.getInfo()
+      const data = await Api.users.getInfo()
       commit('SET_LOGGED_IN_USER', data)
     }
   }

@@ -1,7 +1,8 @@
 import { User } from './user'
 
 export declare interface Group {
-  id: number;
+  pk: number;
   name: string;
+  owner: User;
   members: User[];
 }
