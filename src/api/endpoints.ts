@@ -13,3 +13,7 @@ export const endpoints = {
     delete: '/split-the-bill/groups/<pk>/'
   }
 }
+
+export function replacePk (endpoint: string, pk: number): string {
+  return endpoint.replace('<pk>', pk.toString())
+}

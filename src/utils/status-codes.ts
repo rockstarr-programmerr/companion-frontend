@@ -1,4 +1,4 @@
-import { AxiosError } from "axios"
+import { AxiosError } from 'axios'
 
 export const isInformational = (status: number): boolean => { return status >= 100 && status <= 199 }
 
