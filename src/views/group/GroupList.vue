@@ -6,9 +6,17 @@
         :key="group.pk"
       >
         <v-list-item-content>
-          <span v-if="!group.editing">
+          <router-link
+            v-if="!group.editing"
+            :to="{
+              name: 'GroupDetail',
+              params: {
+                pk: group.pk
+              }
+            }"
+          >
             {{ group.name }}
-          </span>
+          </router-link>
           <v-text-field
             v-else
             v-model="group.name"
@@ -159,7 +167,7 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
-import { mapGetters, mapMutations } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import { unexpectedExc } from '@/utils'
 import { GroupCreateReq, GroupUpdateReq } from '@/interfaces/api/group'
 import { assertErrCode, status } from '@/utils/status-codes'
@@ -168,9 +176,9 @@ import { Group } from '@/interfaces/group'
 
 @Component({
   computed: {
-    ...mapGetters('groups', {
-      groups: 'groups'
-    })
+    ...mapState('groups', [
+      'groups'
+    ])
   },
   methods: {
     ...mapMutations('groups', {

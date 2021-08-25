@@ -1,4 +1,4 @@
-import { GroupCreateReq, GroupCreateRes, GroupListRes, GroupUpdateReq, GroupUpdateRes } from '@/interfaces/api/group'
+import { GroupCreateReq, GroupCreateRes, GroupDetailRes, GroupListRes, GroupUpdateReq, GroupUpdateRes } from '@/interfaces/api/group'
 import { Group } from '@/interfaces/group'
 import Vue from 'vue'
 import { endpoints, replacePk } from './endpoints'
@@ -6,6 +6,12 @@ import { endpoints, replacePk } from './endpoints'
 export const groups = {
   async list (): Promise<GroupListRes> {
     const res = await Vue.axios.get(endpoints.groups.list)
+    return res.data
+  },
+
+  async detail (pk: Group['pk']): Promise<GroupDetailRes> {
+    const endpoint = replacePk(endpoints.groups.detail, pk)
+    const res = await Vue.axios.get(endpoint)
     return res.data
   },
 

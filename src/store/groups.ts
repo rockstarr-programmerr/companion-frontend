@@ -22,11 +22,6 @@ export const groups: Module<GroupsState, RootState> = {
     currentGroup: undefined
   },
 
-  getters: {
-    groups: state => state.groups,
-    currentGroup: state => state.currentGroup
-  },
-
   mutations: {
     SET_GROUPS (state, payload: Group[]): void {
       state.groups = payload.map(group => addDefaultState(group))
@@ -105,6 +100,11 @@ export const groups: Module<GroupsState, RootState> = {
     async list ({ commit }): Promise<void> {
       const data = await Api.groups.list()
       commit('SET_GROUPS', data)
+    },
+
+    async detail ({ commit }, pk: Group['pk']) {
+      const data = await Api.groups.detail(pk)
+      commit('SET_CURRENT_GROUP', data)
     },
 
     async create ({ commit }, payload: GroupCreateReq): Promise<void> {

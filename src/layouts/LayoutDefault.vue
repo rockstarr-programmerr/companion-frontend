@@ -7,9 +7,12 @@
       dense
       flat
     >
-      <div class="d-flex align-center">
-        <div>Companion</div>
-      </div>
+      <router-link
+        :to="{ name: 'Home' }"
+        class="d-flex align-center white--text"
+      >
+        Companion
+      </router-link>
 
       <v-spacer></v-spacer>
 
@@ -27,6 +30,18 @@
     <v-main>
       <router-view/>
     </v-main>
+
+    <v-bottom-navigation
+      app
+      background-color="secondary"
+      dark
+      hide-on-scroll
+    >
+      <v-btn>
+        <v-icon>mdi-chevron-left</v-icon>
+      </v-btn>
+      <v-spacer></v-spacer>
+    </v-bottom-navigation>
   </v-app>
 </template>
 
